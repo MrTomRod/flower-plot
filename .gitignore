@@ -1,0 +1,4 @@
+/build/
+/.idea/
+/flower_plot.egg-info/
+__pycache__
