@@ -32,11 +32,11 @@ plt.tight_layout()
 plt.show()
 ```
 
-Result:
+**Result:**
 
 ![result](tests/output/generate_3.svg)
 
-Arguments:
+**Arguments:**
 
 ```text
 genome_to_data:   dictionary that maps genome names to associated data (color, number of unique and shell genes)
@@ -50,4 +50,41 @@ rotate_genome:    whether to rotate the genome name
 default_fontsize: font size for number of genes and genome name
 core_fontsize:    font size for number of core genes
 ax:               matplotlib axis
-```
+``` 
+
+**Notes on making these plots interactive:**
+
+````javascript
+const extractComment = function (element) {
+    return element.innerHTML.split('<!-- ')[1].split(' -->')[0]
+}
+
+// find flower pot svg
+const flowerPlot = document.getElementById('flower-plot')
+
+// find relevant elements
+flowerPlot.querySelectorAll('*[id^="flower-genome-"]').forEach(genomeElement => {
+    const genomeName = genomeElement.id.substring(14)
+    const shellElement = flowerPlot.querySelector('#flower-shell-' + genomeName)
+    const uniqueElement = flowerPlot.querySelector('#flower-unique-' + genomeName)
+    genomeElement.addEventListener("click", function () {
+        console.log(genomeElement, genomeName)
+    })
+    shellElement.addEventListener("click", function () {
+        console.log(shellElement, extractComment(shellElement))
+    })
+    uniqueElement.addEventListener("click", function () {
+        console.log(uniqueElement, extractComment(uniqueElement))
+    })
+})
+
+// activate core
+flowerPlot.querySelector('#flower-core').addEventListener("click", function () {
+    console.log(this, extractComment(flowerPlot.querySelector('#flower-core-text')))
+})
+
+// make cursor indicate the availability of a context menu
+flowerPlot.querySelectorAll('*[id^="flower-"]').forEach(element => {
+    element.style.cursor = "context-menu";
+})
+````

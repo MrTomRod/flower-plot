@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.axes._base import _AxesBase
 from matplotlib.patches import Ellipse, Circle
 
 
@@ -41,8 +42,8 @@ def flower_plot(
         rotate_genome: bool = True,
         default_fontsize: float = None,
         core_fontsize: float = 12,
-        ax=None
-):
+        ax: _AxesBase = None
+) -> _AxesBase:
     """
     Create a flower plot. Returns matplotlib axis object.
 
@@ -73,7 +74,7 @@ def flower_plot(
     # default text parameters
     if default_fontsize is None:
         default_fontsize = 3.5 / np.log10(factor + 1)  # empirical
-    textparams = dict(horizontalalignment='center', verticalalignment='center', fontsize=default_fontsize)
+    textparams = dict(va='center', fontsize=default_fontsize, bbox=dict(facecolor='white', alpha=1e-16))
 
     # calculate width of the slices [degrees]
     slice = 2 * np.pi / n_genomes
@@ -99,7 +100,7 @@ def flower_plot(
         # unique genes: number
         text_unique = ax.text(
             *calc_point_on_circle(i, slice, 3 * factor + 1),
-            s=data['unique'],
+            s=data['unique'], ha='center',
             rotation=rotated_angle if rotate_unique else None,
             **textparams
         )
@@ -108,7 +109,7 @@ def flower_plot(
         # shell genes: number
         text_shell = ax.text(
             *calc_point_on_circle(i, slice, 3 * factor - 1),
-            s=data['shell'],
+            s=data['shell'], ha='center',
             rotation=rotated_angle if rotate_shell else None,
             **textparams
         )
@@ -117,10 +118,9 @@ def flower_plot(
         # genome name
         text_genome = ax.text(
             *calc_point_on_circle(i, slice, 3 * factor + 2.1),
-            s=genome,
-            rotation=rotated_angle if rotate_genome else None,
-            horizontalalignment=autoalign_text(angle), verticalalignment='center',
-            fontsize=default_fontsize, rotation_mode='anchor'
+            s=genome, ha=autoalign_text(angle),
+            rotation=rotated_angle if rotate_genome else None, rotation_mode='anchor',
+            **textparams
         )
         text_genome.set_gid(f'flower-genome-{genome}')
 
@@ -128,15 +128,16 @@ def flower_plot(
     circle_core = Circle(
         xy=(0, 0), radius=1 * factor, color=core_color
     )
+    circle_core.set_gid('flower-core')
     ax.add_artist(circle_core)
 
     # core genes: number
     text_core = ax.text(
         0, 0, n_core,
-        horizontalalignment='center', verticalalignment='center',
+        ha='center', va='center',
         fontsize=core_fontsize
     )
-    text_core.set_gid('flower-core')
+    text_core.set_gid('flower-core-text')
 
     # scale plot
     lim = 4 + 3 * factor
@@ -146,3 +147,5 @@ def flower_plot(
 
     # disable axis
     ax.set_axis_off()
+
+    return ax
