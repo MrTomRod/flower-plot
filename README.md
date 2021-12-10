@@ -62,17 +62,23 @@ const extractComment = function (element) {
 // find flower pot svg
 const flowerPlot = document.getElementById('flower-plot')
 
-// find relevant elements
+// iterate over the leafs
 flowerPlot.querySelectorAll('*[id^="flower-genome-"]').forEach(genomeElement => {
     const genomeName = genomeElement.id.substring(14)
     const shellElement = flowerPlot.querySelector('#flower-shell-' + genomeName)
     const uniqueElement = flowerPlot.querySelector('#flower-unique-' + genomeName)
+    
+    // activate leaf genome name
     genomeElement.addEventListener("click", function () {
         console.log(genomeElement, genomeName)
     })
+    
+    // activate shell genes number
     shellElement.addEventListener("click", function () {
         console.log(shellElement, extractComment(shellElement))
     })
+    
+    // activate unique genes number
     uniqueElement.addEventListener("click", function () {
         console.log(uniqueElement, extractComment(uniqueElement))
     })
